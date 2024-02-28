@@ -1,4 +1,4 @@
-import kaboom from "https://unpkg.com/kaboom@next/dist/kaboom.js"
+import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs"
 
 // initialize context
 kaboom({
