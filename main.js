@@ -153,7 +153,7 @@ scene("game", () => {
 onCollide("player", "mic", () => {
   if(score > highscore){
     localStorage.highscore = score.toString();
-    highscore = localStorage.highscore;
+    highscore = parseInt(localStorage.highscore);
   }
   console.log("Current High Score: " + highscore);
   go("lose");
