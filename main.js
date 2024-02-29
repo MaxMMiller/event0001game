@@ -1,10 +1,10 @@
-import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs"
+import kaboom from "kaboom"
+import "kaboom/global"
 
 // initialize context
 kaboom({
   width: 700,
   height: 400,
-  canvas: document.getElementById("canvas"),
   font: "Arial",
 });
 
@@ -12,6 +12,12 @@ let score = 0;
 let scoreSpeed = 0.5;
 let jumpForce = 900;
 
+let highscore = parseInt(localStorage.highscore);
+if(isNaN(highscore)){
+  localStorage.setItem("highscore", "0");
+};
+console.log("Current High Score: " + highscore);
+// rgb constants
 const black = rgb(0,0,0);
 const white = rgb(255,255,255);
 const gray = rgb(128,128,128,);
@@ -50,7 +56,7 @@ scene("game", () => {
 
   //Displays text of the players current score
   const scoreLabel = add([
-    text(score),
+    text(score.toString()),
     pos(500, 100),
     color(white),
   ]);
@@ -142,10 +148,14 @@ scene("game", () => {
 
 //Events
 
-//If the player hits the mic the game ends (go to lose screen)
+//If the player hits the mic the game ends (go to lose screen) Also saves highscore to localStorage
 onCollide("player", "mic", () => {
+  if(score > highscore){
+    localStorage.highscore = score.toString();
+    highscore = localStorage.highscore;
+  }
   go("lose");
-})
+});
 
 //If the player jumps into the mag, score grows by an increased amount for a short duration
 player.onCollide("mag", (mag) => {
@@ -156,7 +166,7 @@ player.onCollide("mag", (mag) => {
     scoreSpeed = 0.5;
     bonusTag.scale = vec2(0, 0);
   })
-})
+});
 
 //Rate at which the score increases by 1 for each second of "scoreSpeed" Function calls itself so it continues the entire scene
 function scoreInc() {
@@ -171,6 +181,12 @@ scoreInc()
 //Player Movement
   
 onKeyDown("space", () => {
+  if(player.isGrounded()) {
+    player.jump(jumpForce); 
+  }
+});
+
+onClick(()=> {
   if(player.isGrounded()) {
     player.jump(jumpForce); 
   }
@@ -238,6 +254,15 @@ scene("lose", ()=>{
     "scoreTitle",
   ]);
 
+  const highscoreTitle = add([
+    text("HIGH SCORE = " + highscore),
+    pos(width() / 2, (height() / 2)+140),
+    anchor("center"),
+    area(),
+    color(white),
+    "scoreTitle",
+  ]);
+
   //Changes play again button color on hover
   onHover("titleBtn", () => {
     titleBtn.color = rgb(10, 10, 10);
@@ -257,12 +282,12 @@ scene("lose", ()=>{
     go("game");
   })
 
-    onKeyDown("space", () => {
-      if(t>0){
-      score = 0;
-      go("game");
-      };
-    });
+  onKeyDown("space", () => {
+    if(t>0){
+    score = 0;
+    go("game");
+    };
+  });
   
 }); // End of Lose Scene
 
