@@ -15,6 +15,7 @@ let jumpForce = 900;
 let highscore = parseInt(localStorage.highscore);
 if(isNaN(highscore)){
   localStorage.setItem("highscore", "0");
+  highscore = parseInt(localStorage.highscore);
 };
 console.log("Current High Score: " + highscore);
 // rgb constants
@@ -154,6 +155,7 @@ onCollide("player", "mic", () => {
     localStorage.highscore = score.toString();
     highscore = localStorage.highscore;
   }
+  console.log("Current High Score: " + highscore);
   go("lose");
 });
 
